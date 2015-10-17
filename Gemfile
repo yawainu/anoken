@@ -9,7 +9,8 @@ gem 'settingslogic'
 
 # models
 gem 'seed-fu', '~> 2.3'
-gem 'enum_help'
+gem 'activerecord-import', require: false
+gem 'activerecord-session_store'
 
 # asssets, css, js
 gem 'slim-rails'

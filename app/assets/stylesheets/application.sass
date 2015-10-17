@@ -1,3 +1,47 @@
 // libraries
+@import bootstrap-sprockets
+@import bootstrap
+@import font-awesome
 @import compass/utilities
 @import compass/css3
+
+// media queries
+$mn: "only screen and (max-width: 479px)"
+$xs: "only screen and (min-width: 480px) and (max-width: 767px)"
+$sm: "only screen and (min-width: 768px) and (max-width: 991px)"
+$md: "only screen and (min-width: 992px) and (max-width: 1199px)"
+$lg: "only screen and (min-width: 1200px)"
+
+@mixin fourteen
+  margin: 0 1%
+  width: 12%
+
+h1, h2, h3, h4, h5, h6
+  margin: 0
+  padding: 0
+
+ul, li
+  list-style: none
+  margin: 0
+  padding: 0
+
+.col-xs-14, .col-sm-14, col-md-14, col-lg-14
+  display: inline-block
+  vertical-align: top
+  @media #{$lg}
+    @include fourteen
+.col-xs-14, .col-sm-14, col-md-14
+  @media #{$md}
+    @include fourteen
+.col-xs-14, .col-sm-14
+  @media #{$sm}
+    @include fourteen
+.col-xs-14
+  @media #{$xs}
+    @include fourteen
+
+.fa:before
+  margin-right: 0.6em
+
+.fa:before
+  margin-right: 0.6em

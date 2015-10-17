@@ -1,0 +1,6 @@
+- Task.states.count.times do |i|
+  .col-sm-14
+    h3 = Task.states.key(i)
+    - @tasks.where(state: i).each do |t|
+      ul*{id: t.id}
+        li = t.state
