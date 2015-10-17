@@ -1,0 +1,23 @@
+default: &default
+  adapter: mysql2
+  encode: utf8
+  collation: utf8_unicode_ci
+  reconnect: false
+  pool: 5
+  timeout: 5000
+  username: anoken
+  password: anoken
+
+development:
+  <<: *default
+  database: anoken_development
+
+test:
+  <<: *default
+  database: anoken_test
+
+production:
+  <<: *default
+  database: anoken_production
+  socket: /var/lib/mysql/mysql.sock
+  password: <%= ENV['ANOKEN_DATABASE_PASSWORD'] %>

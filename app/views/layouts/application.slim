@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    meta name="viewport" content="width=device-width"
+    meta http-equiv="content-language" content="ja"
+    meta http-equiv="content-type" content="text/html; charset=utf-8"
+    / TODO title, keywords, description, ogp
+    title
+    meta name="keywords" content=""
+    meta name="description" content=""
+    /
+    = stylesheet_link_tag    'application', media: 'all'
+    == yield(:stylesheets)
+    = javascript_include_tag 'application'
+    == render 'layouts/shim'
+    = csrf_meta_tags
+  body
+    - flash.each do |key, value|
+      div.errors
+        div*{class: "alert alert-#{key}"}
+          p = value
+    == yield
+    == yield(:javascripts)
