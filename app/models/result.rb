@@ -18,10 +18,10 @@ class Result < ActiveRecord::Base
       10.times do
         # task = result.tasks.save(
         task = result.tasks.create(
+          # name: Takarabako.open,
           name: Task::CANDIDATE.sample,
           state: [*0..4].sample,
           category: [*0..Task.categories.count - 1].sample,
-          priority: [*0..Task.priorities.count - 1].sample
         )
         # tasks << task
       end

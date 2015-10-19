@@ -1,24 +1,28 @@
 class TasksController < ApplicationController
 
   def index
-    if request.referer.blank? && session[:result_id].blank?
-      flash.now[:danger] == "トラブル発生"
-      redirect_to root_path and return
-    end
+    # TODO なんかうまくいかない
+    # if session[:result_id].blank? && request.path_info.blank? == session[:ref]
+    #   flash.now[:danger] = "トラブル発生"
+    #   redirect_to root_path and return
+    # end
     @result = Result.find_or_create(session[:result_id])
     @tasks = @result.tasks.order('tasks.state asc')
-    session[:result_id] = @result.id if session[:result_id].blank?
+    # session[:ref] = request.path_info
+    cookies[:result_id] = { value: @result.id, 
+                            expires: 60.seconds.from_now } if
+                          cookies[:result_id].blank?
   end
 
   def update
     task = Task.find(params[:id])
     data =
-      if expired = session[:result_id].present?
-        {task: task.evaluate(task_params) ? task : nil}
+      if continuable = cookies[:result_id].present?
+        {score: task.evaluate(task_params) ? task.result.score : nil}
       else
         {result_id: task.result.id}
       end
-    render json: {expired: expired}.merge(data)
+    render json: {continuable: continuable}.merge(data)
   end
 
   def expired

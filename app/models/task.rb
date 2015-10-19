@@ -11,17 +11,15 @@ class Task < ActiveRecord::Base
                          length: { maximum: 100 }
   validates  :state,     presence: true
   validates  :category,  presence: true
-  validates  :priority,  presence: true
   validates  :comment,   length: { maximum: 5000 },
                          if: :comment?
 
   enum state:    %i(notouch inprogress
-                     waiting postpone
-                     pending done deleted).freeze
+                    waiting postpone
+                    pending done deleted).freeze
   enum category: %i(contact report confirm
-                     check contract cancel
-                     deliver).freeze
-  enum priority: %i(top high middle row).freeze
+                    check contract cancel
+                    deliver).freeze
 
   def evaluate(params)
     assign_attributes(params)
@@ -29,8 +27,8 @@ class Task < ActiveRecord::Base
     changes.each do |changed_column, values|
       score += calculate(changed_column, values)
     end
-    result.score += score
-    params.merge({touched: true}) unless touched?
+    result.update(score: result.score += score) if changed?
+    params = params.merge({touched: true}) unless touched?
     update(params)
   end
 
@@ -88,8 +86,6 @@ class Task < ActiveRecord::Base
         end
       when "category"
         180
-      when "priority"
-        270
       when "name"
         (values[1].uniq_count - values[0].uniq_count) * 30
       when "comment"

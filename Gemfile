@@ -11,6 +11,7 @@ gem 'settingslogic'
 gem 'seed-fu', '~> 2.3'
 gem 'activerecord-import', require: false
 gem 'activerecord-session_store'
+gem 'takarabako'
 
 # asssets, css, js
 gem 'slim-rails'
@@ -22,6 +23,7 @@ gem 'sprockets'
 gem 'compass-rails', github: 'Compass/compass-rails', branch: 'master'
 gem 'zurui-sass-rails'
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'therubyracer', platforms: :ruby
 gem 'jbuilder', '~> 2.0'
 gem 'font-awesome-rails'

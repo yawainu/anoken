@@ -1,6 +1,55 @@
-- Task.states.count.times do |i|
-  .col-sm-14
-    h3 = Task.states.key(i)
-    - @tasks.where(state: i).each do |t|
-      ul*{id: t.id}
-        li = t.state
+/ XXX 
+- (Task.states.count - 1).times do |i|
+  .col-sm-2
+    h3.text-center = Task.states.key(i)
+- (Task.states.count - 1).times do |i|
+  .col-sm-2
+    ul.box.list-group*{id: Task.states.key(i)}
+      - @tasks.where(state: i).each do |t|
+        li.item.list-group-item*{id: t.id, data: {state: t.state}}
+          h4.name = t.name
+          .category = t.category
+- content_for(:javascripts) do
+  coffee:
+    $('.box').sortable
+      connectWith: '.box'
+      cursorAt: {top: 10}
+      forcePlaceholderSize: true
+      grid: false
+      items: '.item'
+      placeholder: 'box-placeholder'
+      tolerance: 'pointer'
+      update: (e, ui) ->
+        item = ui.item
+        id = item.attr('id')
+        new_state = item.closest('ul').attr('id')
+        params = { _method: 'patch', id: id }
+        params['task'] = {
+          state: new_state
+        }
+        $.ajax(
+          data: params
+          dataType: 'json'
+          type: 'POST'
+          url: '/tasks/' + id
+        ).then (res) ->
+          if res.continuable == true
+            if res.score
+              alert res.score
+          else
+            console.log res.result_id
+- content_for(:stylesheets) do
+  sass:
+    .box
+      cursor: move
+      min-height: 1000px
+    .category, .name
+      border: 1px solid #efefef
+      border-radius: 3px
+      cursor: pointer
+      margin: 5px auto
+      padding: 5px 10px
+    .box-placeholder
+      background: #eee
+    .item
+      display: block
