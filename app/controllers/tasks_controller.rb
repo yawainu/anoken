@@ -7,7 +7,7 @@ class TasksController < ApplicationController
     #   redirect_to root_path and return
     # end
     @result = Result.find_or_create(session[:result_id])
-    @tasks = @result.tasks.order('tasks.state asc')
+    @tasks = @result.tasks.group_by(&:state)
     # session[:ref] = request.path_info
     cookies[:result_id] = { value: @result.id, 
                             expires: 60.seconds.from_now } if
@@ -18,15 +18,22 @@ class TasksController < ApplicationController
     task = Task.find(params[:id])
     data =
       if continuable = cookies[:result_id].present?
-        {score: task.evaluate(task_params) ? task.result.score : nil}
+        score = {score: task.evaluate(task_params) ? task.result.score : nil}
+        params[:input].present? ? score.merge({task: task}) : score
       else
-        {result_id: task.result.id}
+        cookies[:finished_id] = { value: task.result.id, expires: 5.minutes.from_now }
+        {}
       end
     render json: {continuable: continuable}.merge(data)
   end
 
   def expired
-    @result = Result.find(params[:id])
+    if cookies[:finished_id].blank?
+      redirect_to root_path and return
+    end
+    @result = Result.find(cookies[:finished_id])
+    @results = Result.order(score: :desc).first(10)
+    flash.now[:danger] = "hogehoge！"
   end
 
   private

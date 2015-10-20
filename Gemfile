@@ -9,7 +9,7 @@ gem 'settingslogic'
 
 # models
 gem 'seed-fu', '~> 2.3'
-gem 'activerecord-import', require: false
+gem 'activerecord-import'
 gem 'activerecord-session_store'
 gem 'takarabako'
 

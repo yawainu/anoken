@@ -1,16 +1,59 @@
-/ XXX 
+== render 'layouts/header'
 - (Task.states.count - 1).times do |i|
   .col-sm-2
     h3.text-center = Task.states.key(i)
 - (Task.states.count - 1).times do |i|
   .col-sm-2
     ul.box.list-group*{id: Task.states.key(i)}
-      - @tasks.where(state: i).each do |t|
-        li.item.list-group-item*{id: t.id, data: {state: t.state}}
-          h4.name = t.name
-          .category = t.category
+      - if @tasks[Task.states.key(i)].present?
+        - @tasks[Task.states.key(i)].each do |t|
+          li.item.list-group-item*{id: t.id, data: {state: t.state}}
+            h4.switch.name = t.name
+            .category = t.category
+            .comment = t.comment
+            .input
+              == text_field_tag :name, t.name, class: "form-control"
+              == select_tag :category, options_for_select(Task.categories.keys.map{|k,v| [k, k]}), class: "form-control"
+              == text_area_tag :comment, t.comment, class: "form-control", placeholder: "コメント"
+              == submit_tag "更新", class: "btn btn-primary submit"
+              == submit_tag "キャンセル", class: "btn btn-default switch"
 - content_for(:javascripts) do
   coffee:
+    taskSwitch = (element) ->
+      element.children('.name').toggle()
+      element.children('.category').toggle()
+      element.children('.comment').toggle()
+      element.children('.input').toggle()
+    $('.switch').on 'click', ->
+      item = $(this).closest('li.item')
+      taskSwitch(item)
+    $('.submit').on 'click', ->
+      field = $(this).closest('.input')
+      item = $(this).closest('li.item')
+      id = item.attr('id')
+      name = field.children('[name=name]').val()
+      category = field.children('[name=category]').val()
+      comment = field.children('[name=comment]').val()
+      params = { _method: 'patch', input: true }
+      params['task'] = {
+        name: name, category: category, comment: comment
+      }
+      $.ajax(
+        data: params
+        dataType: 'json'
+        type: 'POST'
+        url: '/tasks/' + id
+      ).then (res) ->
+        if res.continuable == true
+          if res.score
+            $('#score').html(res.score)
+          if res.task
+            item.children('.name').html(res.task.name)
+            item.children('.category').html(res.task.category)
+            item.children('.comment').html(res.task.comment)
+          taskSwitch(item)
+        else
+          location.href = "/tasks/expired"
     $('.box').sortable
       connectWith: '.box'
       cursorAt: {top: 10}
@@ -23,10 +66,8 @@
         item = ui.item
         id = item.attr('id')
         new_state = item.closest('ul').attr('id')
-        params = { _method: 'patch', id: id }
-        params['task'] = {
-          state: new_state
-        }
+        params = { _method: 'patch' }
+        params['task'] = { state: new_state }
         $.ajax(
           data: params
           dataType: 'json'
@@ -35,15 +76,15 @@
         ).then (res) ->
           if res.continuable == true
             if res.score
-              alert res.score
+              $('#score').html(res.score)
           else
-            console.log res.result_id
+            location.href = "/tasks/expired"
 - content_for(:stylesheets) do
   sass:
     .box
       cursor: move
       min-height: 1000px
-    .category, .name
+    .name
       border: 1px solid #efefef
       border-radius: 3px
       cursor: pointer
@@ -53,3 +94,5 @@
       background: #eee
     .item
       display: block
+    .input
+      display: none

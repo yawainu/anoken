@@ -1,0 +1,30 @@
+.text-center
+  == render 'layouts/header'
+= form_for(@result, remote: true, class: "form-horizontal") do |f|
+  == f.text_field :challenger, class: "form-control"
+  == f.submit "送信する", class: "btn btn-primary"
+
+ul.list-group
+  - @results.each_with_index do |r, i|
+    - if r == @result
+      li.list-group-item.new-record
+        h3
+          small.rank = i + 1
+          small.challenger = r.challenger
+          span = r.score
+    - else
+      li.list-group-item
+        h3
+          small.rank = i + 1
+          small.challenger = r.challenger
+          span = r.score
+- content_for(:stylesheets) do
+  sass:
+    .challenger
+      margin-right: 30px
+    .new-record
+      background: lighten(blue, 30%)
+      color: white
+    .rank
+      display: inline-block
+      min-width: 50px

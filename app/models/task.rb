@@ -34,7 +34,7 @@ class Task < ActiveRecord::Base
 
   def calculate(target, values)
     score = column_for_attribute(target).type == :integer ? 500 : 1500
-    score +=
+    bonus =
       case target
       when "state"
         case values[1]
@@ -87,9 +87,10 @@ class Task < ActiveRecord::Base
       when "category"
         180
       when "name"
-        (values[1].uniq_count - values[0].uniq_count) * 30
+        (values[1].to_s.uniq_count - values[0].to_s.uniq_count) * 30
       when "comment"
-        (values[1].uniq_count - values[0].uniq_count) * 100
+        (values[1].to_s.uniq_count - values[0].to_s.uniq_count) * 100
       end
+    score += bonus
   end
 end

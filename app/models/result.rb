@@ -14,18 +14,18 @@ class Result < ActiveRecord::Base
     # TODO activerecord-importによる高速化
     def prepare
       result = create
-      # tasks = []
+      tasks = []
       10.times do
-        # task = result.tasks.save(
-        task = result.tasks.create(
+        task = Task.new(
           # name: Takarabako.open,
           name: Task::CANDIDATE.sample,
           state: [*0..4].sample,
           category: [*0..Task.categories.count - 1].sample,
+          result: result,
         )
-        # tasks << task
+        tasks << task
       end
-      # Task.import tasks
+      Task.import tasks
       result
     end
   end
