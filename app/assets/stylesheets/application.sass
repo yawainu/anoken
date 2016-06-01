@@ -25,6 +25,9 @@ ul, li
   margin: 0
   padding: 0
 
+.alert
+  @include border-radius(0)
+
 .col-xs-14, .col-sm-14, col-md-14, col-lg-14
   display: inline-block
   vertical-align: top
@@ -39,9 +42,6 @@ ul, li
 .col-xs-14
   @media #{$xs}
     @include fourteen
-
-.fa:before
-  margin-right: 0.6em
 
 .fa:before
   margin-right: 0.6em

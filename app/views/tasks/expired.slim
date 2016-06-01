@@ -18,6 +18,15 @@ ul.list-group
           small.rank = i + 1
           small.challenger = r.challenger
           span = r.score
+- content_for(:javascripts) do
+  coffee:
+    $('form.edit_result').on 'ajax:success', (res) ->
+      if res.result
+        $('form.edit_result').hide()
+        $('h1#score').append("<small>" + res.result.challenger + "</small>")
+        $('.new-record').children('small.challenger').text(res.result.challenger)
+      else
+        alert "hogehoge"
 - content_for(:stylesheets) do
   sass:
     .challenger

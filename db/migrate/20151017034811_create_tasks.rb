@@ -6,11 +6,11 @@ class CreateTasks < ActiveRecord::Migration
       t.boolean :touched, null: false, default: false
       t.integer :category, null: false
       t.integer :priority, null: false
-      t.integer :result_id, null: false
+      t.integer :project_id, null: false
       t.text :comment, limit: 5000
 
       t.timestamps null: false
     end
-    add_index :tasks, :result_id
+    add_index :tasks, :project_id
   end
 end

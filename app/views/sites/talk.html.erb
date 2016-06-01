@@ -1,0 +1,42 @@
+<% content_for :title, t(:my_page_title) %>
+<% content_for :custom_js do %>
+    <%= javascript_include_tag 'https://skyway.io/dist/0.3/peer.js' %>
+    <%= javascript_include_tag 'web-rtc' %>
+<% end %>
+<% content_for :custom_css do %>
+		<%= stylesheet_link_tag 'web-rtc' %>
+<% end %>
+<div class="row-fluid">
+		<div id="status" class="span4" data-user_id="<%= current_user.id %>" data-username="<%= current_user.username %>">
+				<% @schedules.each do |s| %>
+					<div class="talk-schedule" data-schedule_id="<%= s.id %>" data-remote_name="<%= remote_name(s) %>">
+						<%= "#{s.start_time.strftime('%m/%d %H:%M %P')}" %>
+						<span class="pull-right">
+							<%= "#{remote_name(s)}" %>
+						</span>
+					</div>
+				<% end %>
+				<button id="talk-start" class="btn btn-info">
+					Start talk!!
+				</button>
+		</div>
+		<div id="chats" class="span8">
+				<div id="video-box">
+						<video id="my_video" autoplay></video>
+						<video id="target_video" autoplay></video>
+						<button id="call_video" class="btn btn-primary hide">call video</button>
+				</div>
+				<div id="chat-box">
+						<div id="chat-history">
+						</div>
+						<div id="chat-field">
+								<%= text_area_tag :chat, "", id: "chat" %>
+								<%= submit_tag "Send(to remote)", id: "remote_submit", class: "btn btn-primary" %>
+								<%= submit_tag "Send(to offline)", id: "chat_submit", class: "btn btn-primary" %>
+						</div>
+						<div id="file-field">
+								<%= file_field_tag :send_file, id: "file" %>
+						</div>
+				</div>
+		</div>
+</div>
